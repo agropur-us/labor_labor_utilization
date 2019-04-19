@@ -1,0 +1,1053 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
+    <property name="comments">Copyright (c) 2017 Agropur Inc.</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.3.1.v201309091055 Build &lt;4.3.1.v20130917-1035></property>
+    <html-property name="description">This template will create a report with one or more groups, each having identical data fields.</html-property>
+    <property name="units">in</property>
+    <method name="initialize"><![CDATA[importPackage(Packages.com.ibm.tivoli.maximo.report.script);
+
+mxReportScriptContext = MXReportScriptContext.initialize(reportContext);
+
+
+mxReportScriptContext.setDefaultLogLevel("DEBUG");
+mxReportScriptContext.setDefaultLogFile("c:/temp/labor_util.txt");
+scriptLogger = mxReportScriptContext.getReportScriptLogger();]]></method>
+    <method name="beforeFactory"><![CDATA[// Remove page break intervals from PDF output
+if ( (reportContext.getParameterValue("usepagebreaks") == "false")|| reportContext.getOutputFormat() == "pdf" ) {
+	// Give each table in the report a name, and add the names to the list below, e.g. ["mainTable", "childTable1"]
+	var tableListing = ["mainTable"];
+	for each(var tableName in tableListing) {
+		var table = reportContext.getReportRunnable().designHandle.getDesignHandle().findElement(tableName)
+		if (table != null)
+		{
+			table.setProperty("pageBreakInterval", 0);
+		}
+	}
+}]]></method>
+    <method name="afterFactory"><![CDATA[MXReportScriptContext.close();]]></method>
+    <property name="theme">MaximoSystemLibrary.maximoTheme</property>
+    <property name="layoutPreference">auto layout</property>
+    <property name="bidiLayoutOrientation">ltr</property>
+    <property name="imageDPI">96</property>
+    <list-property name="libraries">
+        <structure>
+            <property name="fileName">MaximoSystemLibrary.rptlibrary</property>
+            <property name="namespace">MaximoSystemLibrary</property>
+        </structure>
+    </list-property>
+    <parameters>
+        <scalar-parameter name="where" id="25">
+            <property name="valueType">static</property>
+            <property name="isRequired">false</property>
+            <property name="dataType">string</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant">1=1</value>
+            </simple-property-list>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+        <scalar-parameter name="appname" id="240">
+            <property name="valueType">static</property>
+            <property name="isRequired">false</property>
+            <property name="dataType">string</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+        <scalar-parameter name="paramdelimiter" id="241">
+            <property name="hidden">true</property>
+            <property name="valueType">static</property>
+            <property name="isRequired">false</property>
+            <property name="dataType">string</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+        <scalar-parameter name="paramstring" id="242">
+            <property name="hidden">true</property>
+            <property name="valueType">static</property>
+            <property name="isRequired">false</property>
+            <property name="dataType">string</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+        <scalar-parameter name="usepagebreaks" id="341">
+            <property name="hidden">true</property>
+            <property name="valueType">static</property>
+            <property name="isRequired">false</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant">true</value>
+            </simple-property-list>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+        <scalar-parameter name="worksite" id="433">
+            <text-property name="promptText">Enter SiteID</text-property>
+            <property name="valueType">static</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+    </parameters>
+    <data-sources>
+        <script-data-source name="maximoDataSource" id="64" extends="MaximoSystemLibrary.maximoDataSource"/>
+    </data-sources>
+    <data-sets>
+        <script-data-set name="dataSet" id="5">
+            <list-property name="resultSetHints">
+                <structure>
+                    <property name="position">1</property>
+                    <property name="name">locationsite</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">2</property>
+                    <property name="name">laborcode</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">3</property>
+                    <property name="name">craft</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">4</property>
+                    <property name="name">shiftnum</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">5</property>
+                    <property name="name">orgid</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">6</property>
+                    <property name="name">displayname</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">7</property>
+                    <property name="name">personid</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">8</property>
+                    <property name="name">work_hours</property>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="position">9</property>
+                    <property name="name">avail_hours</property>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="position">10</property>
+                    <property name="name">mod_hours</property>
+                    <property name="dataType">decimal</property>
+                </structure>
+            </list-property>
+            <list-property name="columnHints">
+                <structure>
+                    <property name="columnName">locationsite</property>
+                </structure>
+                <structure>
+                    <property name="columnName">laborcode</property>
+                </structure>
+                <structure>
+                    <property name="columnName">craft</property>
+                </structure>
+                <structure>
+                    <property name="columnName">shiftnum</property>
+                </structure>
+                <structure>
+                    <property name="columnName">orgid</property>
+                </structure>
+                <structure>
+                    <property name="columnName">displayname</property>
+                </structure>
+                <structure>
+                    <property name="columnName">personid</property>
+                </structure>
+                <structure>
+                    <property name="columnName">work_hours</property>
+                </structure>
+                <structure>
+                    <property name="columnName">avail_hours</property>
+                </structure>
+                <structure>
+                    <property name="columnName">mod_hours</property>
+                </structure>
+            </list-property>
+            <structure name="cachedMetaData">
+                <list-property name="resultSet">
+                    <structure>
+                        <property name="position">1</property>
+                        <property name="name">locationsite</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">2</property>
+                        <property name="name">laborcode</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">3</property>
+                        <property name="name">craft</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">4</property>
+                        <property name="name">shiftnum</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">5</property>
+                        <property name="name">orgid</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">6</property>
+                        <property name="name">displayname</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">7</property>
+                        <property name="name">personid</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">8</property>
+                        <property name="name">work_hours</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">9</property>
+                        <property name="name">avail_hours</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">10</property>
+                        <property name="name">mod_hours</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                </list-property>
+            </structure>
+            <property name="dataSource">maximoDataSource</property>
+            <method name="open"><![CDATA[maximoDataSet = MXReportDataSetProvider.create(this.getDataSource().getName(), this.getName());
+maximoDataSet.open();
+
+var sqlText = new String();
+
+// Add query to sqlText variable.
+sqlText = "SELECT person.locationsite, labor.laborcode, laborcraftrate.craft, personcal.shiftnum,  "
++ " labor.orgid, person.displayname, person.personid, "
++ " isnull( "
++ " (select sum(regularhrs) from labtrans a where labor.laborcode=a.laborcode and labor.orgid=a.orgid  "
++ " and a.startdate >= dateadd(wk, datediff(wk, +8, getdate()), -2)  "
++ " AND a.startdate < dateadd(wk, datediff(wk, +1, getdate()), -2)  ),0 ) as work_hours, "
++ " isnull((select sum(workhours) as avail_hours "
++ " from workperiod "
++ " where workdate >= dateadd(wk, datediff(wk, +8, getdate()), -2) "
++ " and workdate < dateadd(wk, datediff(wk, +1, getdate()), -2) and shiftnum=personcal.shiftnum),0) as avail_hours, "
++ " isnull((select sum( "
++ " (case when reasoncode='WORK'   "
++ " 		then workhours   "
++ "  		else -workhours  "
++ " 		end)) as work_hours "
++ " from modavail where personid=person.personid and  workdate >= dateadd(wk, datediff(wk, +8, getdate()), -2) "
++ " and workdate < dateadd(wk, datediff(wk, +1, getdate()), -2)), 0) as mod_hours "
++ " FROM  labor  "
++ " JOIN person ON person.personid=labor.personid  "
++ " join personcal on person.personid=personcal.personid and personcal.isprimary=1 "
++ " LEFT OUTER JOIN laborcraftrate ON (labor.laborcode=laborcraftrate.laborcode) AND (labor.orgid=laborcraftrate.orgid) "
+// where clause
+//+ " where " + params["where"]
++ " where laborcraftrate.defaultcraft = 1  "
++ "  and (labor.laborcode <> 'TESTUSER2' and labor.laborcode <> 'TESTUSER1' ) "
+//+ " and (labor.labocode <> 'TestUser2' or labor.labocode <> 'testuser1' or labor.laborcode <> 'verlyj01') "
++ " AND laborcraftrate.craft in ('AUTOTECH','ELEC','GROUNDS','MECH', 'PDMTECH', 'UTIL', 'WELDER', 'FACMAINT') "
++ " AND labor.status='ACTIVE' and labor.worksite = ? "
+//+ " AND labor.status='ACTIVE' and labor.worksite = 'JCC' "
++ " AND  LABOR.LABORCODE NOT IN ('AUTO','GRNDS01','MECH','MECHANIC') "
+//grouping &amp; ordering
+//+ " ORDER BY laborcraftrate.craft, labor.laborcode 
+
+;
+
+maximoDataSet.setQuery(sqlText);
+
+maximoDataSet.setQueryParameterValue(1, params["worksite"].replace("=" , "").toUpperCase());
+]]></method>
+            <method name="fetch"><![CDATA[if (!maximoDataSet.fetch())
+	return (false);
+
+// Add a line for each output column
+// The specific get method should match the data type of the output column.
+row["locationsite"] = maximoDataSet.getString("locationsite");
+row["laborcode"] = maximoDataSet.getString("laborcode");
+row["craft"] = maximoDataSet.getString("craft");
+row["shiftnum"] = maximoDataSet.getString("shiftnum");
+row["orgid"] = maximoDataSet.getString("orgid");
+row["displayname"] = maximoDataSet.getString("displayname");
+row["personid"] = maximoDataSet.getString("personid");
+
+row["work_hours"] = maximoDataSet.getDouble("work_hours");
+row["avail_hours"] = maximoDataSet.getDouble("avail_hours");
+row["mod_hours"] = maximoDataSet.getDouble("mod_hours");
+
+//row["datefield"] = maximoDataSet.getTimestamp("datefield");	
+
+return (true);]]></method>
+        </script-data-set>
+    </data-sets>
+    <styles>
+        <style name="crosstab-cell" id="376">
+            <property name="borderBottomColor">#CCCCCC</property>
+            <property name="borderBottomStyle">solid</property>
+            <property name="borderBottomWidth">1pt</property>
+            <property name="borderLeftColor">#CCCCCC</property>
+            <property name="borderLeftStyle">solid</property>
+            <property name="borderLeftWidth">1pt</property>
+            <property name="borderRightColor">#CCCCCC</property>
+            <property name="borderRightStyle">solid</property>
+            <property name="borderRightWidth">1pt</property>
+            <property name="borderTopColor">#CCCCCC</property>
+            <property name="borderTopStyle">solid</property>
+            <property name="borderTopWidth">1pt</property>
+        </style>
+        <style name="crosstab" id="377">
+            <property name="borderBottomColor">#CCCCCC</property>
+            <property name="borderBottomStyle">solid</property>
+            <property name="borderBottomWidth">1pt</property>
+            <property name="borderLeftColor">#CCCCCC</property>
+            <property name="borderLeftStyle">solid</property>
+            <property name="borderLeftWidth">1pt</property>
+            <property name="borderRightColor">#CCCCCC</property>
+            <property name="borderRightStyle">solid</property>
+            <property name="borderRightWidth">1pt</property>
+            <property name="borderTopColor">#CCCCCC</property>
+            <property name="borderTopStyle">solid</property>
+            <property name="borderTopWidth">1pt</property>
+        </style>
+    </styles>
+    <page-setup>
+        <simple-master-page name="maximoPortrait" id="342" extends="MaximoSystemLibrary.maximoPortrait">
+            <overridden-values>
+                <ref-entry baseId="342" name="NewGrid21" id="343">
+                    <list-property name="visibility">
+                        <structure>
+                            <property name="format">all</property>
+                            <expression name="valueExpr" type="javascript">true</expression>
+                        </structure>
+                    </list-property>
+                </ref-entry>
+                <ref-entry baseId="343" id="344"/>
+                <ref-entry baseId="344" id="345"/>
+                <ref-entry baseId="345" id="346"/>
+                <ref-entry baseId="346" id="347"/>
+                <ref-entry baseId="348" id="349"/>
+                <ref-entry baseId="349" name="NewImage2" id="350"/>
+                <ref-entry baseId="350" name="NewGrid3" id="351"/>
+                <ref-entry baseId="351" id="352"/>
+                <ref-entry baseId="352" id="353"/>
+                <ref-entry baseId="353" id="354"/>
+                <ref-entry baseId="354" id="355"/>
+                <ref-entry baseId="355" name="NewText2" id="356"/>
+                <ref-entry baseId="356" id="357"/>
+                <ref-entry baseId="357" name="NewGrid11" id="358"/>
+                <ref-entry baseId="358" id="359">
+                    <property name="width">3.03125in</property>
+                </ref-entry>
+                <ref-entry baseId="359" id="360">
+                    <property name="textAlign">center</property>
+                </ref-entry>
+                <ref-entry baseId="360" id="361">
+                    <property name="textAlign">left</property>
+                </ref-entry>
+                <ref-entry baseId="361" id="362"/>
+                <ref-entry baseId="362" id="363"/>
+                <ref-entry baseId="363" name="NewAutoText2" id="364"/>
+                <ref-entry baseId="364" id="365"/>
+                <ref-entry baseId="365" name="NewText11" id="366">
+                    <property name="textAlign">center</property>
+                </ref-entry>
+                <ref-entry baseId="366" id="367"/>
+                <ref-entry baseId="367" name="NewAutoText11" id="368">
+                    <property name="textAlign">left</property>
+                </ref-entry>
+            </overridden-values>
+        </simple-master-page>
+    </page-setup>
+    <body>
+        <table name="mainTable" id="7">
+            <property name="comments">09-19764@000</property>
+            <property name="fontFamily">sans-serif</property>
+            <property name="width">100%</property>
+            <property name="dataSet">dataSet</property>
+            <list-property name="boundDataColumns">
+                <structure>
+                    <property name="name">laborcode</property>
+                    <text-property name="displayName">laborcode</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["laborcode"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">displayname</property>
+                    <text-property name="displayName">displayname</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["displayname"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">craft</property>
+                    <text-property name="displayName">craft</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["craft"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">work_hours</property>
+                    <text-property name="displayName">work_hours</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["work_hours"]</expression>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="name">avail_hours</property>
+                    <text-property name="displayName">avail_hours</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["avail_hours"]</expression>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="name">mod_hours</property>
+                    <text-property name="displayName">mod_hours</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["mod_hours"]</expression>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="name">avail_tot</property>
+                    <text-property name="displayName">avail_tot</text-property>
+                    <property name="dataType">float</property>
+                    <property name="aggregateFunction">SUM</property>
+                    <list-property name="arguments">
+                        <structure>
+                            <property name="name">Expression</property>
+                            <expression name="value" type="javascript">dataSetRow["avail_hours"] + dataSetRow["mod_hours"]</expression>
+                        </structure>
+                    </list-property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">tot_avail</property>
+                    <text-property name="displayName">tot_avail</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["avail_hours"] + dataSetRow["mod_hours"]</expression>
+                    <property name="dataType">decimal</property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">util_prct</property>
+                    <text-property name="displayName">util_prct</text-property>
+                    <expression name="expression" type="javascript">if (row["tot_avail"] == 0)&#13;
+	{0}&#13;
+else {row["work_hours"]/row["tot_avail"]}</expression>
+                    <property name="dataType">decimal</property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">work_grp_tot</property>
+                    <text-property name="displayName">work_grp_tot</text-property>
+                    <property name="dataType">float</property>
+                    <simple-property-list name="aggregateOn">
+                        <value>craftGrp</value>
+                    </simple-property-list>
+                    <property name="aggregateFunction">SUM</property>
+                    <list-property name="arguments">
+                        <structure>
+                            <property name="name">Expression</property>
+                            <expression name="value" type="javascript">row["work_hours"]</expression>
+                        </structure>
+                    </list-property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">avail_grp_tot</property>
+                    <text-property name="displayName">avail_grp_tot</text-property>
+                    <property name="dataType">float</property>
+                    <simple-property-list name="aggregateOn">
+                        <value>craftGrp</value>
+                    </simple-property-list>
+                    <property name="aggregateFunction">SUM</property>
+                    <list-property name="arguments">
+                        <structure>
+                            <property name="name">Expression</property>
+                            <expression name="value" type="javascript">row["tot_avail"]</expression>
+                        </structure>
+                    </list-property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">grp_util_prct</property>
+                    <text-property name="displayName">grp_util_prct</text-property>
+                    <expression name="expression" type="javascript">row["work_grp_tot"]/row["avail_grp_tot"]</expression>
+                    <property name="dataType">decimal</property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">work_grandtot</property>
+                    <text-property name="displayName">work_grandtot</text-property>
+                    <property name="dataType">float</property>
+                    <property name="aggregateFunction">SUM</property>
+                    <list-property name="arguments">
+                        <structure>
+                            <property name="name">Expression</property>
+                            <expression name="value" type="javascript">row["work_hours"]</expression>
+                        </structure>
+                    </list-property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">avail_grandtot</property>
+                    <text-property name="displayName">avail_grandtot</text-property>
+                    <property name="dataType">float</property>
+                    <property name="aggregateFunction">SUM</property>
+                    <list-property name="arguments">
+                        <structure>
+                            <property name="name">Expression</property>
+                            <expression name="value" type="javascript">row["tot_avail"]</expression>
+                        </structure>
+                    </list-property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">total_prct</property>
+                    <text-property name="displayName">total_prct</text-property>
+                    <expression name="expression" type="javascript">row["work_grandtot"]/row["avail_grandtot"]</expression>
+                    <property name="dataType">decimal</property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">to_date</property>
+                    <text-property name="displayName">to_date</text-property>
+                    <expression name="expression" type="javascript">BirtDateTime.addDay(BirtDateTime.firstDayOfWeek(BirtDateTime.addWeek(BirtDateTime.today(), -1)), +5)</expression>
+                    <property name="dataType">date-time</property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">from_date</property>
+                    <text-property name="displayName">from_date</text-property>
+                    <expression name="expression" type="javascript">BirtDateTime.addDay(BirtDateTime.firstDayOfWeek(BirtDateTime.addWeek(BirtDateTime.today(), -1)), -1)</expression>
+                    <property name="dataType">date-time</property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">shiftnum</property>
+                    <text-property name="displayName">shiftnum</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["shiftnum"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">report_beg</property>
+                    <text-property name="displayName">report_beg</text-property>
+                    <expression name="expression" type="javascript">//BirtDateTime.week(BirtDateTime.addWeek(BirtDateTime.now(), -1))&#13;
+//BirtDateTime.firstDayOfWeek(BirtDateTime.addWeek(BirtDateTime.today(), -1))&#13;
+&#13;
+BirtDateTime.addDay(BirtDateTime.firstDayOfWeek(BirtDateTime.addWeek(BirtDateTime.today(), -1)), -2)</expression>
+                    <property name="dataType">date-time</property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">today</property>
+                    <text-property name="displayName">today</text-property>
+                    <expression name="expression" type="javascript">BirtDateTime.firstDayOfWeek(BirtDateTime.addWeek(BirtDateTime.today(), -1))</expression>
+                    <property name="dataType">date-time</property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">now</property>
+                    <text-property name="displayName">now</text-property>
+                    <expression name="expression" type="javascript">BirtDateTime.now()</expression>
+                    <property name="dataType">date-time</property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">report_end</property>
+                    <text-property name="displayName">report_end</text-property>
+                    <expression name="expression" type="javascript">BirtDateTime.addDay(BirtDateTime.firstDayOfWeek(BirtDateTime.addWeek(BirtDateTime.today(), -1)), +4)</expression>
+                    <property name="dataType">date-time</property>
+                    <property name="allowExport">true</property>
+                </structure>
+            </list-property>
+            <property name="pageBreakInterval">50</property>
+            <column id="83">
+                <property name="width">3in</property>
+            </column>
+            <column id="445">
+                <property name="width">1in</property>
+            </column>
+            <column id="91">
+                <property name="width">1in</property>
+            </column>
+            <column id="87">
+                <property name="width">1in</property>
+            </column>
+            <column id="17">
+                <property name="width">1in</property>
+            </column>
+            <column id="18"/>
+            <header>
+                <row id="209">
+                    <property name="style">title</property>
+                    <cell id="210">
+                        <property name="colSpan">6</property>
+                        <property name="rowSpan">1</property>
+                        <text-data id="429">
+                            <property name="fontSize">11pt</property>
+                            <expression name="valueExpr">'Labor Utilization Report for ' + params["worksite"].value.replace("=" , "").toUpperCase() &#13;
++ ': ' + BirtDateTime.month( row["from_date"]) + "/" + BirtDateTime.day( row["from_date"]) + "/" + BirtStr.right((BirtDateTime.year( row["from_date"])).toString(), 2)  + ' - ' + BirtDateTime.month(row["to_date"]) + "/" + BirtDateTime.day(row["to_date"]) + "/" + BirtStr.right((BirtDateTime.year(row["to_date"])).toString(), 2)</expression>
+                            <property name="contentType">html</property>
+                        </text-data>
+                    </cell>
+                </row>
+                <row id="448">
+                    <list-property name="visibility">
+                        <structure>
+                            <property name="format">all</property>
+                            <expression name="valueExpr" type="javascript">true</expression>
+                        </structure>
+                    </list-property>
+                    <cell id="449">
+                        <property name="colSpan">6</property>
+                        <property name="rowSpan">1</property>
+                        <property name="borderBottomColor">#000000</property>
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderTopColor">#000000</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                        <grid id="455">
+                            <column id="456"/>
+                            <column id="457"/>
+                            <column id="458"/>
+                            <row id="459">
+                                <cell id="460">
+                                    <data id="471">
+                                        <property name="resultSetColumn">report_beg</property>
+                                    </data>
+                                </cell>
+                                <cell id="461">
+                                    <data id="474">
+                                        <property name="resultSetColumn">report_end</property>
+                                    </data>
+                                </cell>
+                                <cell id="462">
+                                    <data id="431">
+                                        <property name="resultSetColumn">from_date</property>
+                                    </data>
+                                </cell>
+                            </row>
+                            <row id="463">
+                                <cell id="464">
+                                    <data id="472">
+                                        <property name="resultSetColumn">today</property>
+                                    </data>
+                                </cell>
+                                <cell id="465"/>
+                                <cell id="466"/>
+                            </row>
+                            <row id="467">
+                                <cell id="468">
+                                    <data id="473">
+                                        <property name="resultSetColumn">now</property>
+                                    </data>
+                                </cell>
+                                <cell id="469"/>
+                                <cell id="470">
+                                    <data id="430">
+                                        <property name="resultSetColumn">to_date</property>
+                                    </data>
+                                </cell>
+                            </row>
+                        </grid>
+                    </cell>
+                </row>
+                <row id="202">
+                    <list-property name="visibility">
+                        <structure>
+                            <property name="format">all</property>
+                            <expression name="valueExpr" type="javascript">true</expression>
+                        </structure>
+                    </list-property>
+                    <cell id="203">
+                        <property name="colSpan">6</property>
+                        <property name="rowSpan">1</property>
+                        <property name="borderBottomColor">#000000</property>
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderTopColor">#000000</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                        <grid id="109">
+                            <property name="width">100%</property>
+                            <column id="110">
+                                <property name="style">reportheaderlabel</property>
+                                <property name="width">1in</property>
+                            </column>
+                            <column id="111">
+                                <property name="style">reportheaderdata</property>
+                                <property name="width">6.375in</property>
+                            </column>
+                            <row id="112">
+                                <cell id="113">
+                                    <label id="118">
+                                        <text-property name="text">Parameter 1:</text-property>
+                                    </label>
+                                </cell>
+                                <cell id="114">
+                                    <property name="paddingLeft">2px</property>
+                                </cell>
+                            </row>
+                            <row id="115">
+                                <cell id="116">
+                                    <label id="119">
+                                        <text-property name="text">Parameter 2:</text-property>
+                                    </label>
+                                </cell>
+                                <cell id="117">
+                                    <property name="paddingLeft">2px</property>
+                                </cell>
+                            </row>
+                        </grid>
+                    </cell>
+                </row>
+            </header>
+            <group id="138">
+                <property name="groupName">craftGrp</property>
+                <property name="interval">none</property>
+                <property name="sortDirection">asc</property>
+                <expression name="keyExpr" type="javascript">row["craft"]</expression>
+                <structure name="toc">
+                    <expression name="expressionValue" type="javascript">row["craft"]</expression>
+                </structure>
+                <property name="repeatHeader">true</property>
+                <property name="hideDetail">false</property>
+                <property name="pageBreakAfter">auto</property>
+                <property name="pageBreakBefore">auto</property>
+                <header>
+                    <row id="139">
+                        <property name="style">tableheaderrow</property>
+                        <property name="backgroundColor">#585858</property>
+                        <cell id="140">
+                            <property name="colSpan">6</property>
+                            <property name="rowSpan">1</property>
+                            <property name="style">tableheaderlabel</property>
+                            <grid id="255">
+                                <property name="width">100%</property>
+                                <column id="256">
+                                    <property name="style">tableheaderlabel</property>
+                                    <property name="width">0.687in</property>
+                                </column>
+                                <column id="257">
+                                    <property name="style">tableheaderdata</property>
+                                    <property name="width">1.531in</property>
+                                </column>
+                                <column id="258">
+                                    <property name="style">tableheaderlabel</property>
+                                    <property name="width">0.921in</property>
+                                </column>
+                                <column id="259">
+                                    <property name="style">tableheaderdata</property>
+                                    <property name="width">1.867in</property>
+                                </column>
+                                <column id="268">
+                                    <property name="style">tableheaderlabel</property>
+                                    <property name="width">0.859in</property>
+                                </column>
+                                <column id="266">
+                                    <property name="style">tableheaderdata</property>
+                                    <property name="width">1.57in</property>
+                                </column>
+                                <row id="260">
+                                    <cell id="261">
+                                        <property name="colSpan">5</property>
+                                        <property name="rowSpan">1</property>
+                                        <property name="style">tableheaderlabel</property>
+                                        <property name="textAlign">right</property>
+                                        <text-data id="432">
+                                            <property name="fontSize">9pt</property>
+                                            <property name="textAlign">left</property>
+                                            <expression name="valueExpr">'Labor Totals for ' + row["craft"] + ' craft:'</expression>
+                                            <property name="contentType">html</property>
+                                        </text-data>
+                                    </cell>
+                                    <cell id="265">
+                                        <property name="style">tableheaderdata</property>
+                                    </cell>
+                                </row>
+                            </grid>
+                        </cell>
+                    </row>
+                    <row id="418">
+                        <property name="style">tabledetailslabel</property>
+                        <property name="height">0.05in</property>
+                        <cell id="419">
+                            <property name="style">tabledetailslabelcell</property>
+                        </cell>
+                        <cell id="438">
+                            <property name="style">tabledetailslabelcell</property>
+                        </cell>
+                        <cell id="421">
+                            <property name="style">tabledetailslabelcell</property>
+                        </cell>
+                        <cell id="422">
+                            <property name="style">tabledetailslabelcell</property>
+                        </cell>
+                        <cell id="423">
+                            <property name="style">tabledetailslabelcell</property>
+                        </cell>
+                        <cell id="424">
+                            <property name="style">tabledetailslabelcell</property>
+                        </cell>
+                    </row>
+                    <row id="160">
+                        <property name="style">tabledetailslabel</property>
+                        <property name="fontSize">9pt</property>
+                        <property name="textAlign">center</property>
+                        <cell id="161">
+                            <property name="style">tabledetailslabelcell</property>
+                            <label id="96"/>
+                        </cell>
+                        <cell id="439">
+                            <property name="style">tabledetailslabelcell</property>
+                            <label id="446">
+                                <text-property name="text">Shift ID</text-property>
+                            </label>
+                        </cell>
+                        <cell id="163">
+                            <property name="style">tabledetailslabelcell</property>
+                            <label id="425">
+                                <text-property name="text">Actual Hours</text-property>
+                            </label>
+                        </cell>
+                        <cell id="164">
+                            <property name="style">tabledetailslabelcell</property>
+                            <label id="426">
+                                <text-property name="text">Avail Hours</text-property>
+                            </label>
+                        </cell>
+                        <cell id="165">
+                            <property name="style">tabledetailslabelcell</property>
+                            <label id="427">
+                                <text-property name="text">Util Prct</text-property>
+                            </label>
+                        </cell>
+                        <cell id="166">
+                            <property name="style">tabledetailslabelcell</property>
+                        </cell>
+                    </row>
+                </header>
+                <footer>
+                    <row id="409">
+                        <property name="height">0.05in</property>
+                        <cell id="410"/>
+                        <cell id="441">
+                            <property name="fontSize">8pt</property>
+                            <property name="textAlign">center</property>
+                        </cell>
+                        <cell id="412">
+                            <property name="fontSize">8pt</property>
+                            <property name="textAlign">center</property>
+                        </cell>
+                        <cell id="413">
+                            <property name="fontSize">8pt</property>
+                            <property name="textAlign">center</property>
+                        </cell>
+                        <cell id="414"/>
+                        <cell id="415"/>
+                    </row>
+                    <row id="369">
+                        <property name="fontSize">8pt</property>
+                        <property name="verticalAlign">middle</property>
+                        <cell id="370">
+                            <property name="colSpan">2</property>
+                            <property name="rowSpan">1</property>
+                            <text-data id="417">
+                                <property name="paddingTop">3pt</property>
+                                <property name="paddingBottom">3pt</property>
+                                <property name="textAlign">right</property>
+                                <expression name="valueExpr">'Sub-total for ' + row["craft"] + ' craft: '</expression>
+                                <property name="contentType">html</property>
+                            </text-data>
+                        </cell>
+                        <cell id="372">
+                            <property name="fontSize">8pt</property>
+                            <property name="textAlign">center</property>
+                            <data id="389">
+                                <structure name="numberFormat">
+                                    <property name="category">Fixed</property>
+                                    <property name="pattern">#,##0.00{RoundingMode=HALF_UP}</property>
+                                </structure>
+                                <property name="resultSetColumn">work_grp_tot</property>
+                            </data>
+                        </cell>
+                        <cell id="373">
+                            <property name="fontSize">8pt</property>
+                            <property name="textAlign">center</property>
+                            <data id="390">
+                                <structure name="numberFormat">
+                                    <property name="category">Fixed</property>
+                                    <property name="pattern">#,##0.00{RoundingMode=HALF_UP}</property>
+                                </structure>
+                                <property name="resultSetColumn">avail_grp_tot</property>
+                            </data>
+                        </cell>
+                        <cell id="374">
+                            <data id="391">
+                                <property name="fontSize">8pt</property>
+                                <structure name="numberFormat">
+                                    <property name="category">Percent</property>
+                                    <property name="pattern">###0.0%{RoundingMode=HALF_UP}</property>
+                                </structure>
+                                <property name="textAlign">center</property>
+                                <property name="resultSetColumn">grp_util_prct</property>
+                            </data>
+                        </cell>
+                        <cell id="375"/>
+                    </row>
+                </footer>
+            </group>
+            <detail>
+                <row id="11">
+                    <property name="style">tabledetailsdatarow</property>
+                    <property name="fontSize">8pt</property>
+                    <property name="textAlign">center</property>
+                    <cell id="81">
+                        <property name="style">tabledetailsdatacell</property>
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">1px</property>
+                        <text-data id="434">
+                            <property name="textAlign">left</property>
+                            <expression name="valueExpr">row["displayname"] + ' (' + row["laborcode"] + ')'</expression>
+                            <property name="contentType">html</property>
+                        </text-data>
+                    </cell>
+                    <cell id="440">
+                        <property name="style">tabledetailsdatacell</property>
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">1px</property>
+                        <data id="447">
+                            <property name="resultSetColumn">shiftnum</property>
+                        </data>
+                    </cell>
+                    <cell id="89">
+                        <property name="style">tabledetailsdatacell</property>
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">1px</property>
+                        <data id="382">
+                            <structure name="numberFormat">
+                                <property name="category">Fixed</property>
+                                <property name="pattern">###0.00{RoundingMode=HALF_UP}</property>
+                            </structure>
+                            <property name="resultSetColumn">work_hours</property>
+                        </data>
+                    </cell>
+                    <cell id="85">
+                        <property name="style">tabledetailsdatacell</property>
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">1px</property>
+                        <data id="387">
+                            <structure name="numberFormat">
+                                <property name="category">Fixed</property>
+                                <property name="pattern">###0.00{RoundingMode=HALF_UP}</property>
+                            </structure>
+                            <property name="resultSetColumn">tot_avail</property>
+                        </data>
+                    </cell>
+                    <cell id="12">
+                        <property name="style">tabledetailsdatacell</property>
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">1px</property>
+                        <data id="388">
+                            <structure name="numberFormat">
+                                <property name="category">Percent</property>
+                                <property name="pattern">###0.0%{RoundingMode=HALF_UP}</property>
+                            </structure>
+                            <property name="resultSetColumn">util_prct</property>
+                        </data>
+                    </cell>
+                    <cell id="13">
+                        <property name="style">tabledetailsdatacell</property>
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">1px</property>
+                    </cell>
+                </row>
+            </detail>
+            <footer>
+                <row id="402">
+                    <property name="fontSize">8pt</property>
+                    <property name="textAlign">center</property>
+                    <property name="height">0.05in</property>
+                    <cell id="403"/>
+                    <cell id="443"/>
+                    <cell id="405"/>
+                    <cell id="406"/>
+                    <cell id="407"/>
+                    <cell id="408"/>
+                </row>
+                <row id="392">
+                    <property name="fontSize">9pt</property>
+                    <property name="textAlign">center</property>
+                    <cell id="393">
+                        <property name="colSpan">2</property>
+                        <property name="rowSpan">1</property>
+                        <text id="416">
+                            <property name="textAlign">right</property>
+                            <property name="contentType">auto</property>
+                            <text-property name="content"><![CDATA[Report period grand total:]]></text-property>
+                        </text>
+                    </cell>
+                    <cell id="395">
+                        <data id="399">
+                            <structure name="numberFormat">
+                                <property name="category">Fixed</property>
+                                <property name="pattern">#,##0.00{RoundingMode=HALF_UP}</property>
+                            </structure>
+                            <property name="resultSetColumn">work_grandtot</property>
+                        </data>
+                    </cell>
+                    <cell id="396">
+                        <data id="400">
+                            <structure name="numberFormat">
+                                <property name="category">Fixed</property>
+                                <property name="pattern">#,##0.00{RoundingMode=HALF_UP}</property>
+                            </structure>
+                            <property name="resultSetColumn">avail_grandtot</property>
+                        </data>
+                    </cell>
+                    <cell id="397">
+                        <data id="401">
+                            <structure name="numberFormat">
+                                <property name="category">Percent</property>
+                                <property name="pattern">###0.0%{RoundingMode=HALF_UP}</property>
+                            </structure>
+                            <property name="resultSetColumn">total_prct</property>
+                        </data>
+                    </cell>
+                    <cell id="398"/>
+                </row>
+            </footer>
+        </table>
+    </body>
+</report>
