@@ -838,7 +838,7 @@ BirtDateTime.addDay(BirtDateTime.firstDayOfWeek(BirtDateTime.addWeek(BirtDateTim
                         <cell id="163">
                             <property name="style">tabledetailslabelcell</property>
                             <label id="425">
-                                <text-property name="text">Actual Hours</text-property>
+                                <text-property name="text">Actual Hrs</text-property>
                             </label>
                         </cell>
                         <cell id="164">
