@@ -592,10 +592,10 @@ BirtDateTime.addDay(BirtDateTime.firstDayOfWeek(BirtDateTime.addWeek(BirtDateTim
             </list-property>
             <property name="pageBreakInterval">50</property>
             <column id="83">
-                <property name="width">3in</property>
+                <property name="width">2.7395833333333335in</property>
             </column>
             <column id="445">
-                <property name="width">1in</property>
+                <property name="width">1.2604166666666667in</property>
             </column>
             <column id="91">
                 <property name="width">1in</property>
@@ -832,7 +832,7 @@ BirtDateTime.addDay(BirtDateTime.firstDayOfWeek(BirtDateTime.addWeek(BirtDateTim
                         <cell id="439">
                             <property name="style">tabledetailslabelcell</property>
                             <label id="446">
-                                <text-property name="text">Shift ID</text-property>
+                                <text-property name="text">Shift Identification</text-property>
                             </label>
                         </cell>
                         <cell id="163">
