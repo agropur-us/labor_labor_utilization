@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
     <property name="comments">Copyright (c) 2017 Agropur Inc.</property>
-    <property name="createdBy">Eclipse BIRT Designer Version 4.3.1.v201309091055 Build &lt;4.3.1.v20130917-1035></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
     <html-property name="description">This template will create a report with one or more groups, each having identical data fields.</html-property>
     <property name="units">in</property>
     <method name="initialize"><![CDATA[importPackage(Packages.com.ibm.tivoli.maximo.report.script);
@@ -844,7 +844,7 @@ BirtDateTime.addDay(BirtDateTime.firstDayOfWeek(BirtDateTime.addWeek(BirtDateTim
                         <cell id="164">
                             <property name="style">tabledetailslabelcell</property>
                             <label id="426">
-                                <text-property name="text">Avail Hours</text-property>
+                                <text-property name="text">Avail. Hours</text-property>
                             </label>
                         </cell>
                         <cell id="165">
